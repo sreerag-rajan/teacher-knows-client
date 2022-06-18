@@ -1,5 +1,6 @@
 
 import './App.css';
+import 'react-toastify/dist/ReactToastify.css';
 import { Navbar } from './Pages/Navbar/Navbar'
 import { AllRoutes } from './AllRoutes/AllRoutes'
 import { Footer } from './Pages/Footer/Footer'

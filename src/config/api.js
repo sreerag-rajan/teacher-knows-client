@@ -1,0 +1,1 @@
+export const serverapi = 'http://localhost:2345'
