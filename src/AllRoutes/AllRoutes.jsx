@@ -1,5 +1,7 @@
 import { Route,Routes } from "react-router-dom"
-import { SignUp } from "../Pages/SignUp/SignUp"
+import { Login } from "../Pages/Auth/Login/Login"
+import { SignUp } from "../Pages/Auth/SignUp/SignUp"
+import { Dashboard } from "../Pages/Dashboard/Dashboard"
 
 
 export const AllRoutes = ()=>{
@@ -8,7 +10,8 @@ export const AllRoutes = ()=>{
             <Route path="/" element={"Home"}/>
             {/* <Route path="/auth" element={<Auth/>}/> */}
             <Route path='/signup' element={<SignUp/>}/>
-            <Route path="/:userid" element = {"Dashboard"}/>
+            <Route path='/login' element={<Login/>}/>
+            <Route path="/dashboard" element = {<Dashboard/>}/>
         </Routes>
     )
 }

@@ -3,7 +3,7 @@ import { useRef } from "react";
 import { useState } from "react"
 import { useSelector, useDispatch } from "react-redux";
 import { ToastContainer, toast } from 'react-toastify';
-import { registerUser } from "../../Redux/Auth/auth.action";
+import { registerUser } from "../../../Redux/Auth/auth.action";
 
 
 export const SignUp = ()=>{
@@ -76,7 +76,8 @@ export const SignUp = ()=>{
 				<TextField 
 					error={error.firstName} 
 					helperText={error.firstName && errorMessage.current} 
-					onChange={handleChange} value={formData.firstName} 
+					onChange={handleChange} 
+					value={formData.firstName} 
 					name="firstName" 
 					label='First Name' 
 					variant="outlined" 

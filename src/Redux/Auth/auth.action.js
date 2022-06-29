@@ -1,5 +1,5 @@
 import axios from "axios";
-import { serverapi } from "../../config/api";
+import { clientApi, serverapi } from "../../config/api";
 
 export const SET_USER = "SET_USER";
 export const SET_LOADING_STATE = 'SET_LOADING_STATE'
@@ -15,6 +15,8 @@ export const registerUser = (payload) => dispatch => {
 			console.log('User sucessfully registered')
 			dispatch(setUser(data))
 			localStorage.setItem('__tk_userToken', JSON.stringify(data.token));
+			localStorage.setItem('__tk_user' , JSON.stringify(data.user));
+			window.location.href = clientApi+'/'
 		})
 		.catch((er)=>{
 			console.error('ERROR ::: registerUser:::', er.message, "; ", er.response.data.error)
@@ -30,6 +32,8 @@ export const loginUser = payload => dispatch => {
 		.then(({data})=>{
 			dispatch(setUser(data));
 			localStorage.setItem('__tk_userToken', JSON.stringify(data.token))
+			localStorage.setItem('__tk_user' , JSON.stringify(data.user));
+			window.location.href = clientApi+'/'
 		})
 		.catch((er)=>{
 			console.error('ERROR ::: loginUser:::', er.message, "; ", er.response.data.error)
