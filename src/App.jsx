@@ -9,7 +9,7 @@ import { useDispatch } from 'react-redux';
 import { setUser } from './Redux/Auth/auth.action';
 
 function App() {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   useEffect(()=>{
     let user = JSON.parse(localStorage.getItem('__tk_user'));
     let token = JSON.parse(localStorage.getItem('__tk_userToken'))

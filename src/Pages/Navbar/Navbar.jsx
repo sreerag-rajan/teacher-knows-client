@@ -18,7 +18,7 @@ export const Navbar = ()=>{
         <nav>
             <div>
             <Link to="/">Home</Link>
-            <Link to="/dashboard">Dashboard</Link>
+            {user && <Link to="/dashboard">Dashboard</Link>}
             </div>
             {!user?<div>
             <Link to="/login">
@@ -32,7 +32,7 @@ export const Navbar = ()=>{
                 </Button>
             </Link>
             </div>:
-            <Button onClick={handleLogout} variant="contained" sx={{backgroundColor: "red"}}>LogOut</Button>
+            <Button onClick={handleLogout} variant="contained" color="secondary">LogOut</Button>
             }
             
         </nav>
