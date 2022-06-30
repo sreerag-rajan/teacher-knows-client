@@ -1,0 +1,9 @@
+nav{
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 1.5rem;
+}
+nav>div{
+  display: flex;
+  gap: 0.8rem
+}
