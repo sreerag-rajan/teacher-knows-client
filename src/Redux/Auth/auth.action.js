@@ -16,6 +16,7 @@ export const registerUser = (payload) => dispatch => {
 			dispatch(setUser(data))
 			sessionStorage.setItem('__tk_userToken', JSON.stringify(data.token));
 			sessionStorage.setItem('__tk_user' , JSON.stringify(data.user));
+			sessionStorage.setItem('__tk_verify_token_type', JSON.stringify('REGISTER'));
 			dispatch(createVerificationToken(data.user.email));
 
 		})
@@ -58,12 +59,16 @@ export const verifyToken = ({token, type}) => dispatch =>{
 	axios.post(`${serverapi}/token/verify-token`,{token, type})
 		.then((res)=>{
 			if(type==="REGISTER"){
-				let token = JSON.parse(sessionStorage.getItem('_tk_userToken'))
+				let token = JSON.parse(sessionStorage.getItem('__tk_userToken'))
 				localStorage.setItem('__tk_userToken', JSON.stringify(token))
-				localStorage.setItem('__tk_user' , JSON.stringify(res.user));
+				localStorage.setItem('__tk_user' , JSON.stringify(res.data.user));
+				sessionStorage.removeItem('__tk_userToken');
+				sessionStorage.removeItem('__tk_user');
+				sessionStorage.removeItem('__tk_verify_token_type');
 				window.location.href = clientApi+'/'
 			}
 			else{
+				sessionStorage.setItem('__tk_PasswordResetToken', res.token)
 				window.location.href= clientApi+'/reset-password'
 			}
 	})

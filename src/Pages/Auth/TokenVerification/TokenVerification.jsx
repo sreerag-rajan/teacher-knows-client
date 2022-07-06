@@ -4,10 +4,13 @@ import { Button } from '@mui/material';
 import './TokenVerification.css'
 import { useRef } from 'react';
 import {Navigate} from 'react-router-dom'
+import { useDispatch } from 'react-redux';
+import { verifyToken } from '../../../Redux/Auth/auth.action';
 export const TokenVerification = ()=>{
     const [otp, setOtp] = useState("");
     const [isError, setIsError] = useState(false)
-		const [user] = useState(JSON.parse(sessionStorage.getItem('_tk_user')))
+		const [user] = useState(JSON.parse(sessionStorage.getItem('__tk_user')))
+		const dispatch = useDispatch()
 
     const handleChange = (otp) => {
 			setIsError(false);
@@ -16,6 +19,9 @@ export const TokenVerification = ()=>{
 
     const handleSubmit = ()=>{
       if(otp.length<6) return setIsError(true)
+
+			let type = JSON.parse(sessionStorage.getItem('__tk_verify_token_type'));
+			dispatch(verifyToken({token:otp, type}))
     }
     return(
       <div>
