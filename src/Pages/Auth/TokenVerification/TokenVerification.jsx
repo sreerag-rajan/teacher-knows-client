@@ -20,7 +20,7 @@ export const TokenVerification = ()=>{
     const handleSubmit = ()=>{
       if(otp.length<6) return setIsError(true)
 
-			let type = JSON.parse(sessionStorage.getItem('__tk_verify_token_type'));
+			let type = JSON.parse(sessionStorage.getItem('__tk_verify_token_type'))||'PASSWORD_RESET';
 			dispatch(verifyToken({token:otp, type}))
     }
     return(

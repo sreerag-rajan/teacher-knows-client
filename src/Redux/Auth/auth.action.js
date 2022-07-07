@@ -45,17 +45,39 @@ export const loginUser = payload => dispatch => {
 		})
 }
 
+export const resetPassword = payload => dispatch => {
+	dispatch(setLoadingState(true))
+	axios.post(`${serverapi}/auth/reset-password`, payload)
+		.then(()=>{
+			sessionStorage.removeItem('__tk_PasswordResetToken');
+			window.location.href = clientApi + '/login'
+		})
+		.catch((er)=>{
+			console.error('ERROR ::: resetPassword :::', er.message)
+		})
+		.finally(()=>{
+			dispatch(setLoadingState(false));
+		})
+}
+
 
 export const createVerificationToken = payload => dispatch => {
+	dispatch(setLoadingState(true))
 	axios.post(`${serverapi}/token/create-token`,{user:payload})
 		.then((res)=>{
+			sessionStorage.setItem('__tk_user' , JSON.stringify(res.data));
+
 			window.location.href = clientApi+'/verify-token'
 		})
-		.catch((er)=>{console.log('ERROR ::: token creation failed :::', er)});
+		.catch((er)=>{console.error('ERROR ::: token creation failed :::', er)})
+		.finally(()=>{
+			dispatch(setLoadingState(false))
+		})
 
 }
 
 export const verifyToken = ({token, type}) => dispatch =>{
+	dispatch(setLoadingState(true))
 	axios.post(`${serverapi}/token/verify-token`,{token, type})
 		.then((res)=>{
 			if(type==="REGISTER"){
@@ -68,9 +90,15 @@ export const verifyToken = ({token, type}) => dispatch =>{
 				window.location.href = clientApi+'/'
 			}
 			else{
-				sessionStorage.setItem('__tk_PasswordResetToken', res.token)
+				sessionStorage.setItem('__tk_PasswordResetToken', JSON.stringify(res.data.token._id));
 				window.location.href= clientApi+'/reset-password'
 			}
+	})
+	.catch((er)=>{
+		console.error('ERROR ::: verifyToken :::', er)
+	})
+	.finally(()=>{
+		dispatch(setLoadingState(false))
 	})
 }
 

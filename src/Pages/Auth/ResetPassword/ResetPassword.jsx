@@ -1,5 +1,9 @@
-import { TextField } from "@mui/material"
+import { Button, TextField } from "@mui/material"
+import { toast, ToastContainer } from "react-toastify";
 import { useState, useRef } from "react"
+import { Navigate } from "react-router-dom"
+import { useDispatch } from "react-redux";
+import { resetPassword } from "../../../Redux/Auth/auth.action";
 
 export const ResetPassword = () => {
   const [formData, setFormData] = useState({
@@ -10,14 +14,50 @@ export const ResetPassword = () => {
     password1 : false,
     password2 : false
   })
+  const token = JSON.parse(sessionStorage.getItem('__tk_PasswordResetToken'))
+  const dispatch = useDispatch();
 
   const errorMessage = useRef('This field cannot be blank')
   const handleChange = (e)=>{
 		const {name, value} = e.target
 		setFormData({...formData, [name]: value})
 	}
+
+  const handleSubmit = () => {
+    let e = {};
+    if(formData.password1===""){
+      e.password1=true;
+    }
+    else{
+      e.password1=false
+    }
+    if(formData.password2===""){
+      e.password2=true;
+    }
+    else{
+      e.password2 =false;
+    }
+    setError({...e})
+    let errFound = false;
+    for(let key in e){
+      if(e[key]){
+        errFound=true;
+      }
+    }
+    if(errFound){
+      return;
+    }
+    if(formData.password1!==formData.password2){
+      toast.error('Passwords do not match')
+    }
+    else{
+      dispatch(resetPassword({token, password:formData.password1}))
+    }
+    
+  }
   return(
     <div>
+      {!token && <Navigate to="/login"/>}
       <h1>Reset Password</h1>
 
       <TextField
@@ -42,6 +82,21 @@ export const ResetPassword = () => {
         label='Confirm New Password'
         variant='outlined'  
       />
+
+      <Button onClick={handleSubmit} variant='contained'>Submit</Button>
+
+      <ToastContainer
+				position="bottom-right"
+				autoClose={5000}
+				hideProgressBar={false}
+				newestOnTop={false}
+				closeOnClick
+				rtl={false}
+				pauseOnFocusLoss
+				draggable
+				pauseOnHover
+				theme="colored"
+			/>
     </div>
   )
 }
