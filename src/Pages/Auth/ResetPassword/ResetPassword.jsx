@@ -1,8 +1,8 @@
-import { Button, TextField } from "@mui/material"
+import { Button, TextField, CircularProgress } from "@mui/material"
 import { toast, ToastContainer } from "react-toastify";
 import { useState, useRef } from "react"
 import { Navigate } from "react-router-dom"
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { resetPassword } from "../../../Redux/Auth/auth.action";
 
 export const ResetPassword = () => {
@@ -15,6 +15,7 @@ export const ResetPassword = () => {
     password2 : false
   })
   const token = JSON.parse(sessionStorage.getItem('__tk_PasswordResetToken'))
+  const { loadingState } = useSelector(store => store.auth); 
   const dispatch = useDispatch();
 
   const errorMessage = useRef('This field cannot be blank')
@@ -58,32 +59,37 @@ export const ResetPassword = () => {
   return(
     <div>
       {!token && <Navigate to="/login"/>}
-      <h1>Reset Password</h1>
+      {loadingState? <CircularProgress/>
+      :<div>
+        <h1>Reset Password</h1>
+        <TextField
+          value={formData.password1}
+          onChange={handleChange}
+          error={error.password1} 
+          helperText={error.password1 && errorMessage.current}
+          type='password'
+          name='password1'
+          id='password1'
+          label='New Password'
+          variant='outlined'  
+        />
+        <br />
+        <TextField
+          value={formData.password2}
+          onChange={handleChange}
+          error={error.password2} 
+          helperText={error.password2 && errorMessage.current}
+          type='password'
+          name='password2'
+          id='password2'
+          label='Confirm New Password'
+          variant='outlined'  
+        />
+        <br />
 
-      <TextField
-        value={formData.password1}
-        onChange={handleChange}
-        error={error.password1} 
-				helperText={error.password1 && errorMessage.current}
-        type='password'
-        name='password1'
-        id='password1'
-        label='New Password'
-        variant='outlined'  
-      />
-      <TextField
-        value={formData.password2}
-        onChange={handleChange}
-        error={error.password2} 
-				helperText={error.password2 && errorMessage.current}
-        type='password'
-        name='password2'
-        id='password2'
-        label='Confirm New Password'
-        variant='outlined'  
-      />
+        <Button onClick={handleSubmit} variant='contained'>Submit</Button>
 
-      <Button onClick={handleSubmit} variant='contained'>Submit</Button>
+      </div>}
 
       <ToastContainer
 				position="bottom-right"

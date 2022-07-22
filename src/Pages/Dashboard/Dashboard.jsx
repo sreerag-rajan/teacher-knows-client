@@ -1,5 +1,6 @@
 import { useSelector } from "react-redux"
 import { Navigate } from "react-router-dom";
+import { Subjects } from "./Components/Subjects/Subjects";
 
 
 export const Dashboard = ()=>{
@@ -11,6 +12,8 @@ export const Dashboard = ()=>{
     return(
         <div>
             <h1>Welcome {user?.firstName}!</h1>
+
+            <Subjects/>
         </div>
     )
 }
