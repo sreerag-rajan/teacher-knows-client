@@ -21,3 +21,17 @@ export const getSubjects = ()=> dispatch => {
     })
   
 }
+
+export const addSubject = (payload)=> dispatch => {
+  dispatch({type: SET_SUBJECTS_LOADING_STATE, payload: true});
+  axios.post('/subject', payload)
+    .then(({data})=>{
+      dispatch({type: SET_SUBJECTS, payload: data});
+    })
+    .catch((er)=>{
+      console.error('ERROR ::: getSubjects ::: ', er);
+    })
+    .finally(()=>{
+      dispatch({type: SET_LOADING_STATE, payload: false})
+    })
+}
