@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 import { addSubject, editSubject} from "../Redux/Subject/subject.action";
 import { useEffect } from "react";
 import axios from '../config/axiosInstance'
-import { debounce } from "../Utility/utlity";
+import { useDebounce } from "../Utility/hooks/useDebounce";
 
 const style = {
   position: 'absolute',
@@ -28,6 +28,8 @@ export const AddSubjects = ({open, handleClose, mode='new', selectedSubject=null
   const [name, setName] = useState('')
   const [error, setError] = useState(false);
   const errorMessage = useRef('This field cannot be blank');
+  const debouncedName = useDebounce(name, 500);
+
   const dispatch = useDispatch();
 
   useEffect(()=>{
@@ -38,10 +40,14 @@ export const AddSubjects = ({open, handleClose, mode='new', selectedSubject=null
     return ()=> setName('');
   },[open])
 
+
+  useEffect(()=>{
+    checkEntityAvailabity(debouncedName)
+  },[debouncedName])
+
   const handleChange = (e) => {
     setError(false); 
     setName(e.target.value)
-    debounce(checkEntityAvailabity(e.target.value), 800)
   }
   
 
