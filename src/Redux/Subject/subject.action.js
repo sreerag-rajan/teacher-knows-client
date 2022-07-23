@@ -5,6 +5,7 @@ import { SET_LOADING_STATE } from '../Auth/auth.action';
 //ACTION TYPES
 export const SET_SUBJECTS = 'SET_SUBJECTS';
 export const SET_SUBJECTS_LOADING_STATE = 'SET_SUBJECTS_LOADING_STATE';
+export const SET_SUBJECTS_ERROR_STATE = 'SET_SUBJECTS_ERROR_STATE';
 
 //ACTIONS
 export const getSubjects = ()=> dispatch => {
@@ -63,3 +64,4 @@ export const deleteSubject = subjectId => dispatch => {
       dispatch({type: SET_SUBJECTS_LOADING_STATE, payload: false})
     })
 }
+

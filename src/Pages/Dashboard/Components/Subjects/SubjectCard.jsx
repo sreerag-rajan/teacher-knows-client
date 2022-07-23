@@ -1,4 +1,4 @@
-import {Box, Button} from '@mui/material'
+import {Box, Button, Typography} from '@mui/material'
 import LoadingButton from '@mui/lab/LoadingButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -20,7 +20,8 @@ export const SubjectCard = ({subject, handleMode})=> {
   return (
     <Box sx={{
       border: '1px solid black', 
-      minWidth: '8rem', 
+      width: '10rem',
+      height: '7rem', 
       display: 'flex', 
       flexDirection: 'column',
       justifyContent:'space-around', 
@@ -29,7 +30,9 @@ export const SubjectCard = ({subject, handleMode})=> {
       boxShadow: 'rgba(0, 0, 0, 0.35) 0px 5px 15px',
       padding: '5px 20px'
     }}>
-      <Box>{subject.name}</Box>
+      <Box >
+        <Typography sx={{textTransform: 'capitalize'}}>{subject.name}</Typography>
+      </Box>
       <Box sx={{
         display: 'flex',
         gap: '20px',

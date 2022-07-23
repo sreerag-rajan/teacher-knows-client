@@ -6,6 +6,7 @@ import { SignUp } from "../Pages/Auth/SignUp/SignUp"
 import { TokenVerification } from "../Pages/Auth/TokenVerification/TokenVerification"
 import { Dashboard } from "../Pages/Dashboard/Dashboard"
 import { Home } from "../Pages/Home/Home"
+import { SubjectsPage } from "../Pages/Subjects/SubjectsPage"
 
 
 export const AllRoutes = ()=>{
@@ -20,6 +21,7 @@ export const AllRoutes = ()=>{
             <Route path = "/reset-password" element={<ResetPassword/>}/>
 
             <Route path="/dashboard" element = {<Dashboard/>}/>
+            <Route path='/subjects' element={<SubjectsPage/>}/>
         </Routes>
     )
 }

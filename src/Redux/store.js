@@ -14,4 +14,4 @@ const loggerMiddleware = (store)=>(next)=>(action)=>{
     next(action);
 }
 
-export const store = createStore(rootReducer, compose(applyMiddleware(loggerMiddleware)))
+export const store = createStore(rootReducer, compose(applyMiddleware(loggerMiddleware), window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()))

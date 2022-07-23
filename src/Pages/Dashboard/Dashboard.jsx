@@ -13,7 +13,7 @@ export const Dashboard = ()=>{
         <div>
             <h1>Welcome {user?.firstName}!</h1>
 
-            <Subjects/>
+            <Subjects limit={3}/>
         </div>
     )
 }

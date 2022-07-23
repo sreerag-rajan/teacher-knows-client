@@ -2,8 +2,10 @@ import { Modal, Button, Typography, Box, TextField } from "@mui/material"
 import { useRef, useState } from "react";
 import CloseIcon from '@mui/icons-material/Close';
 import { useDispatch } from "react-redux";
-import { addSubject, editSubject } from "../Redux/Subject/subject.action";
+import { addSubject, editSubject} from "../Redux/Subject/subject.action";
 import { useEffect } from "react";
+import axios from '../config/axiosInstance'
+import { debounce } from "../Utility/utlity";
 
 const style = {
   position: 'absolute',
@@ -39,24 +41,36 @@ export const AddSubjects = ({open, handleClose, mode='new', selectedSubject=null
   const handleChange = (e) => {
     setError(false); 
     setName(e.target.value)
+    debounce(checkEntityAvailabity(e.target.value), 800)
   }
   
 
   const handleSubmit = () => {
     if(!name) {
       setError(true);
+      errorMessage.current = 'This field cannot be blank'
       return
     };
     if(mode==='new'){
-      dispatch(addSubject({name}))
+      dispatch(addSubject({name: name.toLowerCase()}))
       setName('');
     }
     else{
-      dispatch(editSubject({subjectId: selectedSubject._id, name}))
+      dispatch(editSubject({subjectId: selectedSubject._id, name: name.toLowerCase()}))
     }
-
     handleClose();
   }  
+
+  const checkEntityAvailabity = (value) => {
+    axios.post('/subject/check-entity-availability', {name: value.toLowerCase()})
+    .then(()=> {
+      setError(false);
+    })
+    .catch(() => {
+      setError(true);
+      errorMessage.current = "This Subject already Exists"
+    });
+  }
   return(
     <>
       <Modal
@@ -89,7 +103,7 @@ export const AddSubjects = ({open, handleClose, mode='new', selectedSubject=null
           />
           <br/>
 
-          <Button variant='contained' onClick={handleSubmit}>{mode==='new'?'ADD':'EDIT'}</Button>
+          <Button disabled={error || name===''} variant='contained' onClick={handleSubmit}>{mode==='new'?'ADD':'EDIT'}</Button>
           
         </Box>
                 
