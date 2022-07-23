@@ -4,7 +4,7 @@ import { Subjects } from "./Components/Subjects/Subjects";
 
 
 export const Dashboard = ()=>{
-    const user = useSelector((store)=>store.auth.user);
+    const user = useSelector((store)=>store.auth.user) || JSON.parse(localStorage.getItem('__tk_user'));
 
     if(!user){
         Navigate({to:"/home"})

@@ -17,7 +17,7 @@ export const getSubjects = ()=> dispatch => {
       console.error('ERROR ::: getSubjects ::: ', er);
     })
     .finally(()=>{
-      dispatch({type: SET_LOADING_STATE, payload: false})
+      dispatch({type: SET_SUBJECTS_LOADING_STATE, payload: false})
     })
   
 }
@@ -29,9 +29,37 @@ export const addSubject = (payload)=> dispatch => {
       dispatch({type: SET_SUBJECTS, payload: data});
     })
     .catch((er)=>{
-      console.error('ERROR ::: getSubjects ::: ', er);
+      console.error('ERROR ::: addSubject ::: ', er);
     })
     .finally(()=>{
-      dispatch({type: SET_LOADING_STATE, payload: false})
+      dispatch({type: SET_SUBJECTS_LOADING_STATE, payload: false})
+    })
+}
+
+export const editSubject = ({subjectId, name}) => dispatch => {
+  dispatch({type: SET_SUBJECTS_LOADING_STATE, payload: true});
+  axios.patch(`/subject/${subjectId}`, {name})
+    .then(({data})=>{
+      dispatch({type: SET_SUBJECTS, payload: data});
+    })
+    .catch((er)=>{
+      console.error('ERROR ::: editSubject ::: ', er);
+    })
+    .finally(()=>{
+      dispatch({type: SET_SUBJECTS_LOADING_STATE, payload: false})
+    })
+}
+
+export const deleteSubject = subjectId => dispatch => {
+  dispatch({type: SET_SUBJECTS_LOADING_STATE, payload: true});
+  axios.delete(`/subject/${subjectId}`)
+    .then(({data})=>{
+      dispatch({type: SET_SUBJECTS, payload: data});
+    })
+    .catch((er)=>{
+      console.error('ERROR ::: deleteSubject ::: ', er);
+    })
+    .finally(()=>{
+      dispatch({type: SET_SUBJECTS_LOADING_STATE, payload: false})
     })
 }

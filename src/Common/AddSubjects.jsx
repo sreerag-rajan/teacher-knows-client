@@ -2,7 +2,8 @@ import { Modal, Button, Typography, Box, TextField } from "@mui/material"
 import { useRef, useState } from "react";
 import CloseIcon from '@mui/icons-material/Close';
 import { useDispatch } from "react-redux";
-import { addSubject } from "../Redux/Subject/subject.action";
+import { addSubject, editSubject } from "../Redux/Subject/subject.action";
+import { useEffect } from "react";
 
 const style = {
   position: 'absolute',
@@ -21,11 +22,19 @@ const style = {
   pb: 3,
 };
 
-export const AddSubjects = ({open, handleClose})=>{
+export const AddSubjects = ({open, handleClose, mode='new', selectedSubject=null})=>{
   const [name, setName] = useState('')
   const [error, setError] = useState(false);
-  const errorMessage = useRef('This field cannot be blank')
-  const dispatch = useDispatch()
+  const errorMessage = useRef('This field cannot be blank');
+  const dispatch = useDispatch();
+
+  useEffect(()=>{
+    if(mode==='edit'){
+      setName(selectedSubject.name);
+    }
+
+    return ()=> setName('');
+  },[open])
 
   const handleChange = (e) => {
     setError(false); 
@@ -38,9 +47,14 @@ export const AddSubjects = ({open, handleClose})=>{
       setError(true);
       return
     };
+    if(mode==='new'){
+      dispatch(addSubject({name}))
+      setName('');
+    }
+    else{
+      dispatch(editSubject({subjectId: selectedSubject._id, name}))
+    }
 
-    dispatch(addSubject({name}))
-    setName('');
     handleClose();
   }  
   return(
@@ -75,7 +89,7 @@ export const AddSubjects = ({open, handleClose})=>{
           />
           <br/>
 
-          <Button variant='contained' onClick={handleSubmit}>ADD</Button>
+          <Button variant='contained' onClick={handleSubmit}>{mode==='new'?'ADD':'EDIT'}</Button>
           
         </Box>
                 
