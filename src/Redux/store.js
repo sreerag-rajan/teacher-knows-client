@@ -1,10 +1,12 @@
 import { createStore, combineReducers, applyMiddleware,compose  } from "redux";
 import { authReducer } from "./Auth/auth.reducer";
+import { classesReducer } from "./Classes/classes.reducer";
 import { subjectReducer } from "./Subject/subject.reducer";
 
 const rootReducer = combineReducers({
     auth: authReducer,
     subjects: subjectReducer,
+    classes: classesReducer,
 })
 
 const loggerMiddleware = (store)=>(next)=>(action)=>{

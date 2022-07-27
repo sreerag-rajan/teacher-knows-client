@@ -1,5 +1,4 @@
 import axios from '../../config/axiosInstance'
-import { SET_LOADING_STATE } from '../Auth/auth.action';
 
 
 //ACTION TYPES
