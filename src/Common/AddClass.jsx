@@ -7,6 +7,7 @@ import {getSubjects} from "../Redux/Subject/subject.action";
 import { useEffect } from "react";
 import axios from '../config/axiosInstance'
 import { useDebounce } from "../Utility/hooks/useDebounce";
+import { addClasses } from "../Redux/Classes/classes.action";
 
 const style = {
   position: 'absolute',
@@ -46,7 +47,8 @@ export const AddClass = ({open, handleClose, mode='new', selectedClass=null}) =>
       setFormData({
         grade: selectedClass.grade,
         section: selectedClass.section,
-        subjects: selectedClass.subjects
+        subjects: selectedClass.subjects,
+        numberOfStudents : selectedClass.numberOfStudents,
       });
     }
 
@@ -85,7 +87,21 @@ export const AddClass = ({open, handleClose, mode='new', selectedClass=null}) =>
   }
 
   const handleSubmit = () => {
-    handleClose();
+    const payload = {
+      grade : formData.grade,
+      section : formData.section.toLowerCase(),
+      subjects: formData.subjects,
+      numberOfStudents: formData.numberOfStudents,
+    }
+    dispatch(addClasses(payload))
+
+    setFormData({
+      grade: '',
+      section: '',
+      subjects: [],
+      numberOfStudents: 0
+    });
+    
   }
 
   return(
@@ -137,7 +153,7 @@ export const AddClass = ({open, handleClose, mode='new', selectedClass=null}) =>
             >
             <FormGroup>
             {subjects && subjects.map((el) => {
-              return <FormControlLabel key={el.id} control={<Checkbox key={el.id} value={el.name} checked={formData.subjects.includes(el.name)} onChange={handleChange}/>} sx={{textTransform: 'capitalize'}} label={el.name} />
+              return <FormControlLabel key={el._id} control={<Checkbox value={el._id} checked={formData.subjects.includes(el._id)} onChange={handleChange}/>} sx={{textTransform: 'capitalize'}} label={el.name} />
             })}
           </FormGroup>
           </Box>

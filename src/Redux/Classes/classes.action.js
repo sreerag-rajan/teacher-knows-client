@@ -25,4 +25,16 @@ export const getClasses = () => dispatch => {
     })
 }
 
-// export const addClasses = payload => dispatch => {}; 
+export const addClasses = payload => dispatch => {
+  dispatch({type: SET_CLASSES_LOADING_STATE, payload : true});
+  axios.post('/classes', payload)
+    .then(({data})=>{
+      dispatch({type: SET_CLASSES, payload : data})
+    })
+    .catch((er)=>{
+      console.error('ERROR ::: getClasses ::: ', er);
+      dispatch({type: SET_CLASSES_ERROR_STATE, payload: true});
+      dispatch({type: SET_CLASSES_ERROR_MESSAGE, payload: "Something Went Wrong"});
+    })
+    .finally(() => dispatch({type: SET_CLASSES_LOADING_STATE, payload: false}));
+}; 

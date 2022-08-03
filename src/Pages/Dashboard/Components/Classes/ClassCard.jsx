@@ -35,7 +35,7 @@ export const ClassCard = ({item, handleMode}) => {
         padding: '5px 20px'
       }}>
         <Box >
-          <Typography>Class : {item.grade} - {item.section}</Typography>
+          <Typography sx={{textTransform: 'capitalize'}}>Class : {item.grade} - {item.section}</Typography>
           <br/>
           <Typography sx ={{textTransform: 'capitalize'}}>
             {subjects.current.length>1 ? 'Subjects':'Subject'} : {subjects.current && subjects.current.join(", ")}
