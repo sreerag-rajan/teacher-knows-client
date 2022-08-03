@@ -2,6 +2,7 @@ import { Button, Grid } from "@mui/material"
 import React, { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import {useNavigate} from 'react-router-dom'
+import { AddClass } from "../../../../Common/AddClass"
 import { getClasses } from "../../../../Redux/Classes/classes.action"
 import { ClassCard } from "./ClassCard"
 
@@ -55,6 +56,7 @@ export const Classes = ({limit}) => {
         </Grid>
         
       </Grid>
+      <AddClass open = {isModalOpen} handleClose = {closeModal} mode ={mode} selectedClass ={selectedClass}/>
     </React.Fragment>
   )
 }

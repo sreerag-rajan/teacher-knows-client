@@ -1,8 +1,9 @@
-import { Modal, Button, Typography, Box, TextField } from "@mui/material"
-import { useRef, useState } from "react";
+import {isEmpty as _isEmpty} from "lodash";
+import { Modal, Button, Typography, Box, TextField, Checkbox, FormGroup, FormControlLabel } from "@mui/material"
+import React, { useRef, useState } from "react";
 import CloseIcon from '@mui/icons-material/Close';
-import { useDispatch } from "react-redux";
-import { addSubject, editSubject} from "../Redux/Subject/subject.action";
+import { useDispatch, useSelector } from "react-redux";
+import {getSubjects} from "../Redux/Subject/subject.action";
 import { useEffect } from "react";
 import axios from '../config/axiosInstance'
 import { useDebounce } from "../Utility/hooks/useDebounce";
@@ -26,17 +27,20 @@ const style = {
 
 
 export const AddClass = ({open, handleClose, mode='new', selectedClass=null}) => {
+  //Setting States
   const [formData, setFormData] = useState({
     grade: '',
-    Section: '',
+    section: '',
     subjects: [],
     numberOfStudents: 0
   })
   const [error, setError] = useState(false);
   const errorMessage = useRef('This field cannot be blank');
+  const { subjects }= useSelector(store => store.subjects);
 
   const dispatch = useDispatch();
 
+  //USE EFFECTS
   useEffect(()=>{
     if(mode==='edit'){
       setFormData({
@@ -48,25 +52,41 @@ export const AddClass = ({open, handleClose, mode='new', selectedClass=null}) =>
 
     return ()=> setFormData({
       grade: '',
-      Section: '',
+      section: '',
       subjects: [],
       numberOfStudents: 0
     });
   },[open])
 
+  useEffect(()=>{
+    if(_isEmpty(subjects)){
+      dispatch(getSubjects());
+    }
+  },[])
+
+  //Functions
   const handleChange = (e) => {
     setError(false); 
-    const {name, value, type} = e.target;
+    const {name, value, type, checked} = e.target;
+    //Logic for Checkbox
     if(type === 'checkbox'){
-      //need logic here
+      if(checked && !formData.subjects.includes(value)){
+        setFormData({...formData, subjects: [...formData.subjects, value]});    
+      }
+      else if (formData.subjects.includes(value)){
+        const x = formData.subjects.filter((el) => {
+          if(el !== value) return el;
+        });
+        setFormData({...formData, subjects: x});
+      }
     }
-    setFormData({...formData, [name]: value});    
+    else
+      setFormData({...formData, [name]: value});    
   }
-  
 
   const handleSubmit = () => {
     handleClose();
-  }  
+  }
 
   return(
     <>
@@ -107,6 +127,21 @@ export const AddClass = ({open, handleClose, mode='new', selectedClass=null}) =>
             variant='outlined'         
           />
           <br/>
+          <Box sx={{border: '1px solid grey', borderRadius: '10px', padding: "0.5rem 1.3rem"}}>
+            <h3>Subjects: </h3>
+            <Box
+              sx={{
+                height: '10rem',
+                overflowY: "scroll"
+              }} 
+            >
+            <FormGroup>
+            {subjects && subjects.map((el) => {
+              return <FormControlLabel key={el.id} control={<Checkbox key={el.id} value={el.name} checked={formData.subjects.includes(el.name)} onChange={handleChange}/>} sx={{textTransform: 'capitalize'}} label={el.name} />
+            })}
+          </FormGroup>
+          </Box>
+        </Box>
           <Button disabled={error} variant='contained' onClick={handleSubmit}>{mode==='new'?'ADD':'EDIT'}</Button>
           
         </Box>
