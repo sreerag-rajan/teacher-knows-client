@@ -2,10 +2,10 @@ import { Modal, Button, Typography, Box, TextField } from "@mui/material"
 import { useRef, useState } from "react";
 import CloseIcon from '@mui/icons-material/Close';
 import { useDispatch } from "react-redux";
-import { addSubject, editSubject} from "../Redux/Subject/subject.action";
+import { addSubject, editSubject} from "../../Redux/Subject/subject.action";
 import { useEffect } from "react";
-import axios from '../config/axiosInstance'
-import { useDebounce } from "../Utility/hooks/useDebounce";
+import axios from '../../config/axiosInstance'
+import { useDebounce } from "../../Utility/hooks/useDebounce";
 
 const style = {
   position: 'absolute',

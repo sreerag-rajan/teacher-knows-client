@@ -1,15 +1,19 @@
-import React, { useRef } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import {Box, Button, Typography} from '@mui/material'
 import LoadingButton from '@mui/lab/LoadingButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteSubject } from '../../../../Redux/Subject/subject.action';
+import { deleteSubject } from '../../Redux/Subject/subject.action';
 
 
 export const ClassCard = ({item, handleMode}) => {
-  const subjects = useRef(item.subjects.map(el => el.name))
+  const [subjects, setSubjects] = useState(item.subjects.map(el => el.name))
   const {classesLoadingState} = useSelector(store => store.classes)
+
+  useEffect(()=>{
+    setSubjects(item.subjects.map(el => el.name));
+  },[item])
 
   const dispatch = useDispatch();
 
@@ -25,7 +29,7 @@ export const ClassCard = ({item, handleMode}) => {
       <Box sx={{
         border: '1px solid black', 
         width: '15rem',
-        height: '10rem', 
+        height: '12rem', 
         display: 'flex', 
         flexDirection: 'column',
         justifyContent:'space-around', 
@@ -38,7 +42,7 @@ export const ClassCard = ({item, handleMode}) => {
           <Typography sx={{textTransform: 'capitalize'}}>Class : {item.grade} - {item.section}</Typography>
           <br/>
           <Typography sx ={{textTransform: 'capitalize'}}>
-            {subjects.current.length>1 ? 'Subjects':'Subject'} : {subjects.current && subjects.current.join(", ")}
+            {subjects.length>1 ? 'Subjects':'Subject'} : {subjects && subjects.join(", ")}
           </Typography>
           <br />
           <Typography>

@@ -3,7 +3,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { useDispatch, useSelector } from 'react-redux'
-import { deleteSubject } from '../../../../Redux/Subject/subject.action'
+import { deleteSubject } from '../../Redux/Subject/subject.action'
 
 export const SubjectCard = ({subject, handleMode})=> {
   const {subjectLoadingState} = useSelector(store => store.subjects)

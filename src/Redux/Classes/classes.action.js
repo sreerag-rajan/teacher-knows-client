@@ -38,3 +38,19 @@ export const addClasses = payload => dispatch => {
     })
     .finally(() => dispatch({type: SET_CLASSES_LOADING_STATE, payload: false}));
 }; 
+
+export const editClasses = ({id, payload}) => dispatch => {
+  dispatch({type: SET_CLASSES_LOADING_STATE, payload : true});
+  axios.patch(`/classes/${id}`, payload)
+    .then(({data})=>{
+      console.log('data: ', data)
+      dispatch({type: SET_CLASSES, payload : data})
+    })
+    .catch((er)=>{
+      console.error('ERROR ::: getClasses ::: ', er);
+      dispatch({type: SET_CLASSES_ERROR_STATE, payload: true});
+      dispatch({type: SET_CLASSES_ERROR_MESSAGE, payload: "Something Went Wrong"});
+    })
+    .finally(() => dispatch({type: SET_CLASSES_LOADING_STATE, payload: false}));
+
+}

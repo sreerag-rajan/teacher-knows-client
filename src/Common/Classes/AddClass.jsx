@@ -3,11 +3,11 @@ import { Modal, Button, Typography, Box, TextField, Checkbox, FormGroup, FormCon
 import React, { useRef, useState } from "react";
 import CloseIcon from '@mui/icons-material/Close';
 import { useDispatch, useSelector } from "react-redux";
-import {getSubjects} from "../Redux/Subject/subject.action";
+import {getSubjects} from "../../Redux/Subject/subject.action";
 import { useEffect } from "react";
-import axios from '../config/axiosInstance'
-import { useDebounce } from "../Utility/hooks/useDebounce";
-import { addClasses } from "../Redux/Classes/classes.action";
+import axios from '../../config/axiosInstance'
+import { useDebounce } from "../../Utility/hooks/useDebounce";
+import { addClasses, editClasses } from "../../Redux/Classes/classes.action";
 
 const style = {
   position: 'absolute',
@@ -47,7 +47,7 @@ export const AddClass = ({open, handleClose, mode='new', selectedClass=null}) =>
       setFormData({
         grade: selectedClass.grade,
         section: selectedClass.section,
-        subjects: selectedClass.subjects,
+        subjects: selectedClass.subjects.map(el => el._id),
         numberOfStudents : selectedClass.numberOfStudents,
       });
     }
@@ -93,7 +93,10 @@ export const AddClass = ({open, handleClose, mode='new', selectedClass=null}) =>
       subjects: formData.subjects,
       numberOfStudents: formData.numberOfStudents,
     }
-    dispatch(addClasses(payload))
+    if(mode === 'new')
+      dispatch(addClasses(payload));
+    else
+      dispatch(editClasses({id: selectedClass._id, payload}))
 
     setFormData({
       grade: '',
