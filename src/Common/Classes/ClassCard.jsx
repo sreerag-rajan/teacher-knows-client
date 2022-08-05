@@ -1,10 +1,10 @@
-import React, { useEffect, useRef, useState } from "react"
+import React, { useEffect, useState } from "react"
 import {Box, Button, Typography} from '@mui/material'
 import LoadingButton from '@mui/lab/LoadingButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteSubject } from '../../Redux/Subject/subject.action';
+import { deleteClass } from "../../Redux/Classes/classes.action";
 
 
 export const ClassCard = ({item, handleMode}) => {
@@ -22,7 +22,7 @@ export const ClassCard = ({item, handleMode}) => {
   }
 
   const handleDelete = () => {
-    dispatch(deleteSubject(item._id));
+    dispatch(deleteClass(item._id));
   }
   return (
     <React.Fragment>

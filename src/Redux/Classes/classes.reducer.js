@@ -4,7 +4,8 @@ const initState = {
   classes : [],
   classesLoadingState : false,
   classesErrorState : false,
-  classesErrorMessage : ''
+  classesErrorMessage : '',
+  selectedClass : null,
 }
 
 export const classesReducer = (store = initState, {type, payload}) => {

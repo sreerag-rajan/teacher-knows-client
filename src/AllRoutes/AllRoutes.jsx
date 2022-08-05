@@ -5,6 +5,7 @@ import { ResetPassword } from "../Pages/Auth/ResetPassword/ResetPassword"
 import { SignUp } from "../Pages/Auth/SignUp/SignUp"
 import { TokenVerification } from "../Pages/Auth/TokenVerification/TokenVerification"
 import { ClassesPage } from "../Pages/Classes/ClassesPage"
+import { IndividualClass } from "../Pages/Classes/IndividualClass"
 import { Dashboard } from "../Pages/Dashboard/Dashboard"
 import { Home } from "../Pages/Home/Home"
 import { SubjectsPage } from "../Pages/Subjects/SubjectsPage"
@@ -24,6 +25,7 @@ export const AllRoutes = ()=>{
             <Route path="/dashboard" element = {<Dashboard/>}/>
             <Route path='/subjects' element={<SubjectsPage/>}/>
             <Route path='/classes' element={<ClassesPage/>}/>
+            <Route path='/classes/:id' element={<IndividualClass/>}/>
 
         </Routes>
     )

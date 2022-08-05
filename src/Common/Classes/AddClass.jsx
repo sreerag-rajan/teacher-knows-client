@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {getSubjects} from "../../Redux/Subject/subject.action";
 import { useEffect } from "react";
 import axios from '../../config/axiosInstance'
-import { useDebounce } from "../../Utility/hooks/useDebounce";
+// import { useDebounce } from "../../Utility/hooks/useDebounce";
 import { addClasses, editClasses } from "../../Redux/Classes/classes.action";
 
 const style = {
@@ -35,8 +35,11 @@ export const AddClass = ({open, handleClose, mode='new', selectedClass=null}) =>
     subjects: [],
     numberOfStudents: 0
   })
-  const [error, setError] = useState(false);
-  const errorMessage = useRef('This field cannot be blank');
+  const [error, setError] = useState({
+    grade: {state: false, message: ''},
+    section: {state: false, message : ''}
+  });
+
   const { subjects }= useSelector(store => store.subjects);
 
   const dispatch = useDispatch();
@@ -46,18 +49,24 @@ export const AddClass = ({open, handleClose, mode='new', selectedClass=null}) =>
     if(mode==='edit'){
       setFormData({
         grade: selectedClass.grade,
-        section: selectedClass.section,
+        section: selectedClass.section.toUpperCase(),
         subjects: selectedClass.subjects.map(el => el._id),
         numberOfStudents : selectedClass.numberOfStudents,
       });
     }
 
-    return ()=> setFormData({
-      grade: '',
-      section: '',
-      subjects: [],
-      numberOfStudents: 0
-    });
+    return ()=> {
+      setFormData({
+        grade: '',
+        section: '',
+        subjects: [],
+        numberOfStudents: 0
+      });
+      setError({
+        grade: {state: false, message: ''},
+        section: {state: false, message : ''}
+      })
+  }
   },[open])
 
   useEffect(()=>{
@@ -67,9 +76,47 @@ export const AddClass = ({open, handleClose, mode='new', selectedClass=null}) =>
   },[])
 
   //Functions
-  const handleChange = (e) => {
-    setError(false); 
+  const handleChange = (e) => { 
     const {name, value, type, checked} = e.target;
+
+    //Error Handling
+    if(name === 'grade'){
+      if(formData.section){
+        setError({
+          grade: {state: false, message: ''},
+          section: {state: false, message : ''}
+        })
+      }
+      else
+        setError({...error, grade: {state: false, message: ''}})
+    }
+    if(name === 'section'){
+      if(formData.grade){
+        setError({
+          grade: {state: false, message: ''},
+          section: {state: false, message : ''}
+        })
+      }
+      else
+        setError({...error, section: {state: false, message: ''}})
+    }
+
+    //Check Entity Availability
+    if((name === 'grade' && formData.section)||(name=== 'section' && formData.grade)){
+      let grade = name==='grade'?value : formData.grade;
+      let section = name==='section'? value.toLowerCase() : formData.section.toLowerCase();
+      axios.post('/classes/check-entity-availablity', {grade, section})
+        .then((res)=> {
+          })
+        .catch(er => {
+          setError({
+            grade : {state: true, message:'This class and section exists'},
+            section: {state: true, message:'This class and section exists'}
+          })
+        })
+  
+    }
+
     //Logic for Checkbox
     if(type === 'checkbox'){
       if(checked && !formData.subjects.includes(value)){
@@ -87,6 +134,17 @@ export const AddClass = ({open, handleClose, mode='new', selectedClass=null}) =>
   }
 
   const handleSubmit = () => {
+    let errorFound = false;
+    if(formData.grade===''){
+      errorFound = true;
+      setError({...error, grade: {state: true, message: 'This field cannot be blank'}})
+    }
+    if(formData.section.trim()===''){
+      errorFound = true;
+      setError({...error, section: {state: true, message: 'This field cannot be blank'}})
+    }
+    if(errorFound) return;
+
     const payload = {
       grade : formData.grade,
       section : formData.section.toLowerCase(),
@@ -104,6 +162,10 @@ export const AddClass = ({open, handleClose, mode='new', selectedClass=null}) =>
       subjects: [],
       numberOfStudents: 0
     });
+    setError({
+      grade: {state: false, message: ''},
+      section: {state: false, message : ''}
+    })
     
   }
 
@@ -128,8 +190,8 @@ export const AddClass = ({open, handleClose, mode='new', selectedClass=null}) =>
           <TextField
             value={formData.grade}
             onChange={handleChange}
-            helperText={error && errorMessage.current}
-            error={error}
+            helperText={error.grade.state && error.grade.message}
+            error={error.grade.state}
             name='grade'
             label="Grade"
             variant='outlined'
@@ -139,8 +201,8 @@ export const AddClass = ({open, handleClose, mode='new', selectedClass=null}) =>
           <TextField
             value={formData.section}
             onChange={handleChange}
-            helperText={error && errorMessage.current}
-            error={error}
+            helperText={error.section.state && error.section.message}
+            error={error.section.state}
             name='section'
             label="Section"
             variant='outlined'         
@@ -161,7 +223,7 @@ export const AddClass = ({open, handleClose, mode='new', selectedClass=null}) =>
           </FormGroup>
           </Box>
         </Box>
-          <Button disabled={error} variant='contained' onClick={handleSubmit}>{mode==='new'?'ADD':'EDIT'}</Button>
+          <Button disabled={error.grade.state || error.section.state} variant='contained' onClick={handleSubmit}>{mode==='new'?'ADD':'EDIT'}</Button>
           
         </Box>
                 

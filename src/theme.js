@@ -13,5 +13,5 @@ export const theme = createTheme({
       dark: "#73777B"
     },
     tertiary: '73777B',
-  }
+  },
 });
