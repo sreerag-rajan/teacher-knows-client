@@ -5,9 +5,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useDispatch, useSelector } from "react-redux";
 import {getSubjects} from "../../Redux/Subject/subject.action";
 import { useEffect } from "react";
-import axios from '../../config/axiosInstance'
-// import { useDebounce } from "../../Utility/hooks/useDebounce";
 import { addClasses, editClasses } from "../../Redux/Classes/classes.action";
+import { entityAvailability } from "../../Utility/utlity";
 
 const style = {
   position: 'absolute',
@@ -105,10 +104,8 @@ export const AddClass = ({open, handleClose, mode='new', selectedClass=null}) =>
     if((name === 'grade' && formData.section)||(name=== 'section' && formData.grade)){
       let grade = name==='grade'?value : formData.grade;
       let section = name==='section'? value.toLowerCase() : formData.section.toLowerCase();
-      axios.post('/classes/check-entity-availablity', {grade, section})
-        .then((res)=> {
-          })
-        .catch(er => {
+      entityAvailability({route: '/classes/check-entity-availablity', payload: {grade, section}})
+        .catch(()=> {
           setError({
             grade : {state: true, message:'This class and section exists'},
             section: {state: true, message:'This class and section exists'}

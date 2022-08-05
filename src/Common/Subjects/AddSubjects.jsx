@@ -4,8 +4,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useDispatch } from "react-redux";
 import { addSubject, editSubject} from "../../Redux/Subject/subject.action";
 import { useEffect } from "react";
-import axios from '../../config/axiosInstance'
 import { useDebounce } from "../../Utility/hooks/useDebounce";
+import { entityAvailability } from "../../Utility/utlity";
 
 const style = {
   position: 'absolute',
@@ -42,7 +42,12 @@ export const AddSubjects = ({open, handleClose, mode='new', selectedSubject=null
 
 
   useEffect(()=>{
-    checkEntityAvailabity(debouncedName)
+    entityAvailability({route:'/subject/check-entity-availability', payload: {name: debouncedName.toLowerCase()}})
+      .then(()=>setError(false))
+      .catch(()=>{
+        setError(true);
+        errorMessage.current = "This Subject already Exists"
+      })
   },[debouncedName])
 
   const handleChange = (e) => {
@@ -67,16 +72,6 @@ export const AddSubjects = ({open, handleClose, mode='new', selectedSubject=null
     handleClose();
   }  
 
-  const checkEntityAvailabity = (value) => {
-    axios.post('/subject/check-entity-availability', {name: value.toLowerCase()})
-    .then(()=> {
-      setError(false);
-    })
-    .catch(() => {
-      setError(true);
-      errorMessage.current = "This Subject already Exists"
-    });
-  }
   return(
     <>
       <Modal
