@@ -4,7 +4,8 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteClass } from "../../Redux/Classes/classes.action";
+import { deleteClass, getClass } from "../../Redux/Classes/classes.action";
+import { useNavigate } from "react-router-dom";
 
 
 export const ClassCard = ({item, handleMode}) => {
@@ -16,17 +17,25 @@ export const ClassCard = ({item, handleMode}) => {
   },[item])
 
   const dispatch = useDispatch();
+  const navigate = useNavigate()
 
-  const handleEdit = () =>{
+  const handleEdit = (e) =>{
+    e.stopPropagation()
     handleMode('edit', item);
   }
 
-  const handleDelete = () => {
+  const handleDelete = (e) => {
+    e.stopPropagation()
     dispatch(deleteClass(item._id));
+  }
+
+  const handleNavigate = () => {
+    navigate(`/class/${item._id}`);
+
   }
   return (
     <React.Fragment>
-      <Box sx={{
+      <Box onClick={handleNavigate} sx={{
         border: '1px solid black', 
         width: '15rem',
         height: '12rem', 
@@ -36,7 +45,10 @@ export const ClassCard = ({item, handleMode}) => {
         alignItems:'space-between',
         borderRadius: '10px',
         boxShadow: 'rgba(0, 0, 0, 0.35) 0px 5px 15px',
-        padding: '5px 20px'
+        padding: '5px 20px',
+        "&:hover": {
+          cursor: 'pointer'
+        }
       }}>
         <Box >
           <Typography sx={{textTransform: 'capitalize'}}>Class : {item.grade} - {item.section}</Typography>

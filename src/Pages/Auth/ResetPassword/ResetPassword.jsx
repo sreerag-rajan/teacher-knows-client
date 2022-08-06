@@ -1,5 +1,5 @@
 import { Button, TextField, CircularProgress } from "@mui/material"
-import { toast, ToastContainer } from "react-toastify";
+import { toast} from "react-toastify";
 import { useState, useRef } from "react"
 import { Navigate } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux";
@@ -90,19 +90,6 @@ export const ResetPassword = () => {
         <Button onClick={handleSubmit} variant='contained'>Submit</Button>
 
       </div>}
-
-      <ToastContainer
-				position="bottom-right"
-				autoClose={5000}
-				hideProgressBar={false}
-				newestOnTop={false}
-				closeOnClick
-				rtl={false}
-				pauseOnFocusLoss
-				draggable
-				pauseOnHover
-				theme="colored"
-			/>
     </div>
   )
 }

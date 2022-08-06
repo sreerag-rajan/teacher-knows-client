@@ -1,4 +1,4 @@
-import { SET_CLASSES, SET_CLASSES_ERROR_MESSAGE, SET_CLASSES_ERROR_STATE, SET_CLASSES_LOADING_STATE } from "./classes.action";
+import { SET_CLASSES, SET_CLASSES_ERROR_MESSAGE, SET_CLASSES_ERROR_STATE, SET_CLASSES_LOADING_STATE, SET_SELECTED_CLASS } from "./classes.action";
 
 const initState = {
   classes : [],
@@ -18,6 +18,8 @@ export const classesReducer = (store = initState, {type, payload}) => {
       return {...store, classesErrorState: payload};
     case SET_CLASSES_ERROR_MESSAGE:
       return {...store, classesErrorMessage: payload};
+    case SET_SELECTED_CLASS:
+      return {...store, selectedClass: payload}
     default:
       return store;
   }

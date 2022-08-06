@@ -25,7 +25,7 @@ export const AllRoutes = ()=>{
             <Route path="/dashboard" element = {<Dashboard/>}/>
             <Route path='/subjects' element={<SubjectsPage/>}/>
             <Route path='/classes' element={<ClassesPage/>}/>
-            <Route path='/classes/:id' element={<IndividualClass/>}/>
+            <Route path='/class/:id' element={<IndividualClass/>}/>
 
         </Routes>
     )
