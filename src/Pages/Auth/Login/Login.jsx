@@ -2,6 +2,7 @@ import { Button, CircularProgress, TextField } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useState, useRef } from "react";
 import { loginUser } from "../../../Redux/Auth/auth.action";
+import { Link } from "react-router-dom";
 
 export const Login = ()=>{
   const dispatch = useDispatch()
@@ -55,6 +56,8 @@ export const Login = ()=>{
           variant='outlined'
           type={'password'}
         />
+        <br />
+        <Link to="/forgot-password">Forgot Password</Link>
         <br />
         <Button onClick={handleLogin} variant='contained'>Login</Button>
       </div>}
