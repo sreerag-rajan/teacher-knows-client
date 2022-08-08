@@ -1,5 +1,6 @@
 import axios from '../../config/axiosInstance'
 import { SET_STUDENTS } from '../Student/student.action';
+import { toast} from "react-toastify";
 
 //Action Types
 export const SET_CLASSES = 'SET_CLASSES';
@@ -49,11 +50,13 @@ export const addClasses = payload => dispatch => {
   axios.post('/classes', payload)
     .then(({data})=>{
       dispatch({type: SET_CLASSES, payload : data})
+      toast.success("Class Added");
     })
     .catch((er)=>{
       console.error('ERROR ::: getClasses ::: ', er);
       dispatch({type: SET_CLASSES_ERROR_STATE, payload: true});
       dispatch({type: SET_CLASSES_ERROR_MESSAGE, payload: "Something Went Wrong"});
+      toast.error('Class creation failed! Please try again')
     })
     .finally(() => dispatch({type: SET_CLASSES_LOADING_STATE, payload: false}));
 }; 
@@ -63,11 +66,13 @@ export const editClasses = ({id, payload}) => dispatch => {
   axios.patch(`/classes/${id}`, payload)
     .then(({data})=>{
       dispatch({type: SET_CLASSES, payload : data})
+      toast.success('Class Succesffuly Edited!')
     })
     .catch((er)=>{
       console.error('ERROR ::: getClasses ::: ', er);
       dispatch({type: SET_CLASSES_ERROR_STATE, payload: true});
       dispatch({type: SET_CLASSES_ERROR_MESSAGE, payload: "Something Went Wrong"});
+      toast.error('Class Editing Failed! Please try again');
     })
     .finally(() => dispatch({type: SET_CLASSES_LOADING_STATE, payload: false}));
 
@@ -78,11 +83,13 @@ export const deleteClass = (classId) => dispatch => {
   axios.delete(`/classes/${classId}`)
     .then(({data}) => {
       dispatch({type: SET_CLASSES, payload: data});
+      toast.success('Class Successfully deleted!')
     })
     .catch((er)=> {
       console.error('ERROR ::: deleteClasses ::: ', er);
       dispatch({type: SET_CLASSES_ERROR_STATE, payload: true});
       dispatch({type: SET_CLASSES_ERROR_MESSAGE, payload: "Something Went Wrong"});
+      toast.error('Class deletion Failed! Please try again')
     })
     .finally(()=> {
       dispatch({type: SET_CLASSES_LOADING_STATE, payload: false});

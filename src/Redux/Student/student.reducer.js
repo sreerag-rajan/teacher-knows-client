@@ -9,7 +9,6 @@ const initialState = {
 export const studentReducer = (store=initialState, {type, payload}) => {
   switch(type){
     case SET_STUDENTS:{
-      console.log('payload: ',payload)
       let students = payload.map((el) => {
         el.id = el._id;
         return el;

@@ -19,9 +19,7 @@ export const IndividualClass = () => {
   const dispatch = useDispatch()
 
   useEffect(()=>{
-    if(!selectedClass){
-      dispatch(getClass(id))
-    }
+    dispatch(getClass(id))
   },[])
 
   const openModal = ()=>{
@@ -40,11 +38,11 @@ export const IndividualClass = () => {
   const rows = students;
 
   const columns = [
-    { field: 'rollNumber', headerName: 'Roll No.', width: 80},
-    { field: 'firstName', headerName: 'First Name', width: 250},
-    { field: 'lastName', headerName: 'Last Name', width: 250},
-    { field: 'studentEmail', headerName: 'Student Email', width: 250},
-    { field: 'parentEmail', headerName: 'Parent Email', width: 250},
+    { field: 'rollNumber', headerName: 'Roll No.', width: 80, editable: true},
+    { field: 'firstName', headerName: 'First Name', width: 250, editable: true},
+    { field: 'lastName', headerName: 'Last Name', width: 250, editable: true},
+    { field: 'studentEmail', headerName: 'Student Email', width: 250, editable: true},
+    { field: 'parentEmail', headerName: 'Parent Email', width: 250, editable: true},
   ]
   return(
     <React.Fragment>
@@ -83,7 +81,7 @@ export const IndividualClass = () => {
                   </TableRow>
                 </TableHead>
               </Table> */}
-              <DataGrid width={'90%'} rows={rows} columns={columns}/>
+              <DataGrid width={'90%'} rows={rows} columns={columns} checkboxSelection/>
             </Box>
           </Box>
 

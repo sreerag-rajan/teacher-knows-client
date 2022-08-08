@@ -1,4 +1,5 @@
-import axios from '../../config/axiosInstance'
+import axios from '../../config/axiosInstance';
+import { toast} from "react-toastify";
 
 
 //ACTION TYPES
@@ -27,9 +28,11 @@ export const addSubject = (payload)=> dispatch => {
   axios.post('/subject', payload)
     .then(({data})=>{
       dispatch({type: SET_SUBJECTS, payload: data});
+      toast.success('Subject Added!')
     })
     .catch((er)=>{
       console.error('ERROR ::: addSubject ::: ', er);
+      toast.error('Subject Creation Failed');
     })
     .finally(()=>{
       dispatch({type: SET_SUBJECTS_LOADING_STATE, payload: false})
@@ -41,9 +44,11 @@ export const editSubject = ({subjectId, name}) => dispatch => {
   axios.patch(`/subject/${subjectId}`, {name})
     .then(({data})=>{
       dispatch({type: SET_SUBJECTS, payload: data});
+      toast.success('Subject successfully edited!')
     })
     .catch((er)=>{
       console.error('ERROR ::: editSubject ::: ', er);
+      toast.error("Subject Editing failed! Please try again")
     })
     .finally(()=>{
       dispatch({type: SET_SUBJECTS_LOADING_STATE, payload: false})
@@ -55,9 +60,11 @@ export const deleteSubject = subjectId => dispatch => {
   axios.delete(`/subject/${subjectId}`)
     .then(({data})=>{
       dispatch({type: SET_SUBJECTS, payload: data});
+      toast.success("Subject Successfully deleted!")
     })
     .catch((er)=>{
       console.error('ERROR ::: deleteSubject ::: ', er);
+      toast.error("Subject deleting Failed! Please try again")
     })
     .finally(()=>{
       dispatch({type: SET_SUBJECTS_LOADING_STATE, payload: false})

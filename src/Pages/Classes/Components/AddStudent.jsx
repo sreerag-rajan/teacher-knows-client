@@ -1,5 +1,5 @@
 import {isEmpty as _isEmpty} from "lodash";
-import { Modal, Button, Typography, Box, TextField, FormControl, InputLabel, Select, MenuItem, NativeSelect } from "@mui/material"
+import { Modal, Button, Typography, Box, TextField, FormControl, InputLabel, NativeSelect } from "@mui/material"
 import React, { useRef, useState } from "react";
 import CloseIcon from '@mui/icons-material/Close';
 import { useDispatch, useSelector } from "react-redux";
@@ -30,20 +30,22 @@ const style = {
 
 
 export const AddStudent = ({open, handleClose, mode='new', selectedStudent=null, classId}) => {
-  //Setting States
-  const [formData, setFormData] = useState({
+  const formSchema = {
     rollNumber: '',
     firstName: '',
     lastName: '',
-    gender: '',
+    gender: null,
     studentEmail: '',
     parentEmail : '',
-    classId: classId,
-  })
-  const [error, setError] = useState({
+    classId: classId,}
+  
+  const errorSchema ={
     rollNumber: {state: false, message: ''},
     firstName: {state: false, message : ''}
-  });
+  }
+  //Setting States
+  const [formData, setFormData] = useState({...formSchema})
+  const [error, setError] = useState({...errorSchema});
 
   const {classes} = useSelector(store => store.classes);
   const debouncedRollNumber = useDebounce(formData.rollNumber, 800)
@@ -72,24 +74,13 @@ export const AddStudent = ({open, handleClose, mode='new', selectedStudent=null,
     }
 
     return ()=> {
-      setFormData({
-        rollNumber: '',
-        firstName: '',
-        lastName: '',
-        studentEmail: '',
-        parentEmail : '',
-        classId: classId,
-      });
-      setError({
-        rollNumber: {state: false, message: ''},
-        firstName: {state: false, message : ''}
-      })
-  }
+      setFormData({...formSchema});
+      setError({...errorSchema})
+    }
   },[open])
 
   useEffect(()=>{
-    console.log(debouncedRollNumber, classId, formData.classId);
-    if(formData.classId){
+    if(formData.classId && debouncedRollNumber){
       entityAvailability({route:'/student/check-entity-availablity', payload: {rollNumber: debouncedRollNumber, classId: formData.classId}})
       .catch(()=>{
         setError({...error, rollNumber: {state: true, message: "A Student with this roll number already exists in this class"}})
@@ -133,27 +124,16 @@ export const AddStudent = ({open, handleClose, mode='new', selectedStudent=null,
       rollNumber: formData.rollNumber,
       firstName: formData.firstName,
       lastName: formData.lastName,
-      gender: formData.gender,
+      gender: formData.gender || 'NOT DISCLOSED',
       studentEmail: formData.studentEmail,
       parentEmail: formData.parentEmail,
       classId: formData.classId
     }
-    if(mode === 'new') dispatch(addStudents(payload));
-    else dispatch(editStudent({id: selectedStudent._id, payload}))
+    if(mode === 'new') dispatch(addStudents({classId, payload}));
+    else dispatch(editStudent({id: selectedStudent._id, payload, classId}))
 
-    setError({
-      rollNumber: {state: false, message: ''},
-      firstName: {state: false, message : ''}
-    })
-    setFormData({
-      rollNumber: '',
-    firstName: '',
-    lastName: '',
-    gender: '',
-    studentEmail: '',
-    parentEmail : '',
-    classId: classId,
-    });
+    setError({...errorSchema})
+    setFormData({...formSchema});
 
     if(!isAddMore) handleClose()
 
@@ -208,7 +188,7 @@ export const AddStudent = ({open, handleClose, mode='new', selectedStudent=null,
           <Box>
             <FormControl fullWidth>
               <InputLabel id="demo-simple-select-label">Gender</InputLabel>
-              <Select
+              <NativeSelect
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 value={formData.gender}
@@ -216,11 +196,12 @@ export const AddStudent = ({open, handleClose, mode='new', selectedStudent=null,
                 name='gender'
                 onChange={handleChange}
               >
-                <MenuItem value={'MALE'}>Male</MenuItem>
-                <MenuItem value={'FEMALE'}>Female</MenuItem>
-                <MenuItem value={'OTHER'}>Other</MenuItem>
-                <MenuItem value={'NOT DISCLOSED'}>Do not wish to disclose</MenuItem>
-              </Select>
+                <option value={null}></option>
+                <option value={'MALE'}>Male</option>
+                <option value={'FEMALE'}>Female</option>
+                <option value={'OTHER'}>Other</option>
+                <option value={'NOT DISCLOSED'}>Do not wish to disclose</option>
+              </NativeSelect>
             </FormControl>
           </Box>
           <br />
