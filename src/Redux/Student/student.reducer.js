@@ -8,13 +8,8 @@ const initialState = {
 
 export const studentReducer = (store=initialState, {type, payload}) => {
   switch(type){
-    case SET_STUDENTS:{
-      let students = payload.map((el) => {
-        el.id = el._id;
-        return el;
-      })
-      return {...store, students};
-    }
+    case SET_STUDENTS:
+      return {...store, students: payload};
     case SET_STUDENTS_LOADING:
       return {...store, studentLoadingState: payload};
     case SET_STUDENT_ERROR_STATE:

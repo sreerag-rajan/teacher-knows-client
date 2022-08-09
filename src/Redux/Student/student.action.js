@@ -29,7 +29,7 @@ export const addStudents = ({classId, payload}) => dispatch => {
 export const editStudent = ({id, payload, classId}) => dispatch => {
   dispatch({type: SET_STUDENTS_LOADING, payload: true});
   axios.patch(`/student/${id}`, payload)
-    .then((data)=>{
+    .then(({data})=>{
       dispatch({type: SET_STUDENTS, payload: data.students})
       if(classId === data.classe._id) 
         dispatch({type: SET_SELECTED_CLASS, payload: data.classe});
@@ -47,7 +47,7 @@ export const editStudent = ({id, payload, classId}) => dispatch => {
 export const deleteStudent = (id) => dispatch => {
   dispatch({type: SET_STUDENTS_LOADING, payload: true});
   axios.delete(`/student/${id}`)
-    .then((data)=>{
+    .then(({data})=>{
       dispatch({type: SET_STUDENTS, payload: data.students});
       dispatch({type: SET_SELECTED_CLASS, payload: data.classe});
       dispatch({type: SET_STUDENT_ERROR_STATE, payload: false});

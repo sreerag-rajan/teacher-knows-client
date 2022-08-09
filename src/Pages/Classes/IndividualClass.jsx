@@ -1,4 +1,7 @@
-import { get as _get} from 'lodash';
+import { 
+  get as _get,
+  isEmpty as _isEmpty
+} from 'lodash';
 import React, {useState, useEffect} from "react"
 import { CircularProgress, Table, TableRow, TableCell, Button, TableHead } from "@mui/material"
 import { Box } from "@mui/system"
@@ -7,6 +10,8 @@ import { useDispatch, useSelector } from "react-redux"
 import {useParams} from 'react-router-dom'
 import { getClass } from "../../Redux/Classes/classes.action"
 import { AddStudent } from './Components/AddStudent';
+import { CommonTable } from '../../Common/Components/CommonTable/Table';
+import { deleteStudent } from '../../Redux/Student/student.action';
 
 export const IndividualClass = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -17,7 +22,6 @@ export const IndividualClass = () => {
   const {students} = useSelector(store => store.students)
   const {id} = useParams()
   const dispatch = useDispatch()
-
   useEffect(()=>{
     dispatch(getClass(id))
   },[])
@@ -34,15 +38,47 @@ export const IndividualClass = () => {
     setSelectedStudent(student);
     openModal();
   }
-
-  const rows = students;
+  const handleDelete = (id) => {
+    dispatch(deleteStudent(id))
+  }
 
   const columns = [
-    { field: 'rollNumber', headerName: 'Roll No.', width: 80, editable: true},
-    { field: 'firstName', headerName: 'First Name', width: 250, editable: true},
-    { field: 'lastName', headerName: 'Last Name', width: 250, editable: true},
-    { field: 'studentEmail', headerName: 'Student Email', width: 250, editable: true},
-    { field: 'parentEmail', headerName: 'Parent Email', width: 250, editable: true},
+    {
+      Header: 'Roll Number',
+      accessor : 'rollNumber'
+    },
+    {
+      Header: 'First Name',
+      accessor : 'firstName'
+    },
+    {
+      Header: 'Last Name',
+      accessor : 'lastName'
+    },
+    {
+      Header: 'Gender',
+      accessor : 'gender'
+    },
+    {
+      Header: 'Student Email',
+      accessor : 'studentEmail'
+    },
+    {
+      Header: 'Parent Email',
+      accessor : 'parentEmail'
+    },
+    {
+      Header: 'Edit',
+      Cell : (props) => {
+        return <button onClick={()=> handleMode('edit', _get(props, 'cell.row.original', {}))}>Edit</button>
+      }
+    },
+    {
+      Header: 'Delete',
+      Cell : (props) => {
+        return <button onClick={()=> handleDelete(_get(props, 'cell.row.original._id', null))}>Delete</button>
+      }
+    },
   ]
   return(
     <React.Fragment>
@@ -69,19 +105,9 @@ export const IndividualClass = () => {
               <Button onClick={()=>handleMode('new')} variant='contained'>Add Students</Button>
             </Box>
             <Box sx={{height: '500px'}}> 
-              {/* <Table sx={{width: '95%', margin:'auto', border: `1.5px solid #15133C`}}>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>#</TableCell>
-                    <TableCell>Roll No.</TableCell>
-                    <TableCell>First Name</TableCell>
-                    <TableCell>Last Name</TableCell>
-                    <TableCell>Student</TableCell>
-                    <TableCell>Parent Email</TableCell>
-                  </TableRow>
-                </TableHead>
-              </Table> */}
-              <DataGrid width={'90%'} rows={rows} columns={columns} checkboxSelection/>
+              {/* <DataGrid width={'90%'} rows={rows} columns={columns} checkboxSelection/> */}
+              {!_isEmpty(students) && <CommonTable key={students.length} COLUMNS={columns} ROWS={students}/>}
+              
             </Box>
           </Box>
 
