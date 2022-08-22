@@ -5,6 +5,7 @@ import { ResetPassword } from "../Pages/Auth/ResetPassword/ResetPassword"
 import { SignUp } from "../Pages/Auth/SignUp/SignUp"
 import { TokenVerification } from "../Pages/Auth/TokenVerification/TokenVerification"
 import { ClassesPage } from "../Pages/Classes/ClassesPage"
+import { BulkAddStudents } from "../Pages/Classes/Components/BulkAddStudents"
 import { IndividualClass } from "../Pages/Classes/IndividualClass"
 import { Dashboard } from "../Pages/Dashboard/Dashboard"
 import { Home } from "../Pages/Home/Home"
@@ -26,6 +27,7 @@ export const AllRoutes = ()=>{
             <Route path='/subjects' element={<SubjectsPage/>}/>
             <Route path='/classes' element={<ClassesPage/>}/>
             <Route path='/class/:id' element={<IndividualClass/>}/>
+            <Route path='/students/:classId/bulk-add' element={<BulkAddStudents/>}/>
 
         </Routes>
     )

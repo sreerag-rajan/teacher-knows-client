@@ -1,48 +1,91 @@
 import React, {useMemo} from 'react'
-import { useTable } from 'react-table';
-import './table.css';
+import { useTable, useSortBy, useGlobalFilter } from 'react-table';
+import {Table, TableBody, TableHead, TableCell, TableRow} from '@mui/material'
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+// import './table.css';
 
 export const CommonTable = ({COLUMNS, ROWS}) => {
   const columns = useMemo(()=> COLUMNS, [])
   const data = useMemo(() => ROWS, []);
-  console.log(data)
 
-  const tableInstance = useTable({columns, data})
+  const tableInstance = useTable({columns, data}, useGlobalFilter, useSortBy,)
 
-  const {getTableProps, getTableBodyProps, headerGroups, rows, prepareRow} = tableInstance
+  const {
+    getTableProps, 
+    getTableBodyProps, 
+    headerGroups, 
+    // footerGroups,
+    state,
+    setGlobalFilter,
+    rows, 
+    prepareRow
+  } = tableInstance
 
+  const {globalFilter} = state
   return(
    <React.Fragment>
-    <table {...getTableProps()}>
-      <thead>
+    <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter}/>
+    <Table sx={{width:'98%', margin:'auto', border: '1px solid #15133C'}} {...getTableProps()}>
+      <TableHead sx={{backgroundColor: '#15133C'}}>
         {
           headerGroups.map(headerGroup => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
+            <TableRow {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map( column => (
-                <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+                <TableCell sx={{color: '#F1EEE9', textAlign:'center', fontWeight:'Bold'}} {...column.getHeaderProps(column.getSortByToggleProps())}>
+                  {column.render('Header')}
+                  <span>
+                    {column.isSorted ? (column.isSortedDesc ? <ArrowDropDownIcon fontSize='small'/> : <ArrowDropUpIcon fontSize='small'/>) : ''}
+                  </span>
+                </TableCell>
               ))}
 
-            </tr>
+            </TableRow>
           ))
         }
-      </thead>
-      <tbody {...getTableBodyProps()}>
+      </TableHead>
+      <TableBody {...getTableBodyProps()}>
         {
           rows.map(row => {
             prepareRow(row)
             return (
-              <tr {...row.getRowProps()}>
+              <TableRow {...row.getRowProps()}>
                 {
                   row.cells.map( cell => {
-                    return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                    return <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
                   })
                 }
-              </tr>
+              </TableRow>
             )
           })
         }
-      </tbody>
-    </table>
+      </TableBody>
+      {/* <tfoot>
+        { footerGroups.map(footerGroup => (
+          <tr {...footerGroup.getFooterGroupProps()}>
+            {
+              footerGroup.headers.map(column => (
+                <td {...column.getFooterProps()}>
+                  {column.render('footer')}
+                </td>
+              ))
+            }
+          </tr>
+        ))}
+      </tfoot> */}
+    </Table>
    </React.Fragment>
+  )
+}
+
+
+const GlobalFilter = ({filter, setFilter}) => {
+  return(
+    <React.Fragment>
+      <span>
+        Search: {''}
+        <input value={filter || ''} onChange={(e) => setFilter(e.target.value)}/> 
+      </span>
+    </React.Fragment>
   )
 }

@@ -4,6 +4,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { useDispatch, useSelector } from 'react-redux';
+import Swal from 'sweetalert2'
 import { deleteClass, getClass } from "../../Redux/Classes/classes.action";
 import { useNavigate } from "react-router-dom";
 
@@ -26,7 +27,15 @@ export const ClassCard = ({item, handleMode}) => {
 
   const handleDelete = (e) => {
     e.stopPropagation()
-    dispatch(deleteClass(item._id));
+    Swal.fire({
+      title:"Are you sure?",
+      text:"This will delete all the students in this class",
+      icon:'question',
+      confirmButtonText:"Yes",
+      showCancelButton: true,
+    }).then((result) => {
+      if(result.isConfirmed) dispatch(deleteClass(item._id));
+    });
   }
 
   const handleNavigate = () => {

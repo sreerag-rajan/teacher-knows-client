@@ -239,8 +239,6 @@ export const AddStudent = ({open, handleClose, mode='new', selectedStudent=null,
               </NativeSelect>
             </FormControl>
           </Box>
-          
-          
           <Button disabled={error.rollNumber.state || error.firstName.state} variant='contained' onClick={()=>handleSubmit(false)}>{mode==='new'?'ADD':'EDIT'}</Button>
           
         </Box>

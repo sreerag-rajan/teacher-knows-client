@@ -5,9 +5,8 @@ import {
 import React, {useState, useEffect} from "react"
 import { CircularProgress, Table, TableRow, TableCell, Button, TableHead } from "@mui/material"
 import { Box } from "@mui/system"
-import { DataGrid, GridRowsProp, GridColDef } from '@mui/x-data-grid';
 import { useDispatch, useSelector } from "react-redux"
-import {useParams} from 'react-router-dom'
+import {useNavigate, useParams} from 'react-router-dom'
 import { getClass } from "../../Redux/Classes/classes.action"
 import { AddStudent } from './Components/AddStudent';
 import { CommonTable } from '../../Common/Components/CommonTable/Table';
@@ -21,7 +20,8 @@ export const IndividualClass = () => {
   const {selectedClass, classesLoadingState} = useSelector(store => store.classes)
   const {students} = useSelector(store => store.students)
   const {id} = useParams()
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   useEffect(()=>{
     dispatch(getClass(id))
   },[])
@@ -103,9 +103,9 @@ export const IndividualClass = () => {
             <h2>Students</h2>
             <Box sx={{display: 'flex', justifyContent:'flex-end', margin:'2rem'}}>
               <Button onClick={()=>handleMode('new')} variant='contained'>Add Students</Button>
+              <Button onClick={() => {navigate(`/students/${id}/bulk-add`)}} variant='contained'>Bulk Add Students</Button> 
             </Box>
             <Box sx={{height: '500px'}}> 
-              {/* <DataGrid width={'90%'} rows={rows} columns={columns} checkboxSelection/> */}
               {!_isEmpty(students) && <CommonTable key={students.length} COLUMNS={columns} ROWS={students}/>}
               
             </Box>
