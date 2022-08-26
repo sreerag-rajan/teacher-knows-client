@@ -1,9 +1,14 @@
 import { TextField, Table, TableBody, TableRow, TableCell, TableHead, TableContainer, Button, FormControl, InputLabel, NativeSelect } from "@mui/material"
+import {
+  get as _get,
+  isEmpty as _isEmpty,
+} from 'lodash';
 import { Box } from "@mui/system"
 import React, {useState, useEffect} from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { useParams } from "react-router-dom";
 import { getClasses } from "../../../Redux/Classes/classes.action";
+import { entityAvailability } from "../../../Utility/utlity";
 
 const upperLimit = 15;
 const formSchema = {
@@ -16,6 +21,7 @@ const formSchema = {
   classId: '',
 }
 const errorSchema = {state: false, message : ''}
+
 export const BulkAddStudents = () => {
   const [numberOfStudents, setNumberOfStudents] = useState(0);
   const [formData, setFormData] = useState([]);
@@ -25,12 +31,19 @@ export const BulkAddStudents = () => {
   const {classes, selectedClass} = useSelector(store => store.classes);
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if(_isEmpty(classes)){
+      dispatch(getClasses());
+    }
+  }, [])
+
   useEffect(()=>{
     let x = [...formData];
 
     if(+numberOfStudents> formData.length){
       for(let i =0; i<(+numberOfStudents-formData.length); i++){
-        x.push(formSchema);
+        x.push({...formSchema, classId,});
       }
     } 
     else if(+numberOfStudents < formData.length){
@@ -41,12 +54,6 @@ export const BulkAddStudents = () => {
     setFormData(x);
 
   },[numberOfStudents])
-
-  useEffect(() => {
-    if(classes.length===0){
-      dispatch(getClasses())      
-    }
-  }, [])
 
   const handleNumberOfStudents = (e) => {
     if(e.target.value > upperLimit){
@@ -74,7 +81,6 @@ export const BulkAddStudents = () => {
   }
 
   const checkFunction = () => {
-    // check enitity availability
 
     // check for missing values
   }
@@ -135,12 +141,7 @@ const FormRow = ({id,handleForm,formData, classes, classId}) => {
     firstName: {state: false, message : ''}
   }
   const [error, setError] = useState({...errorSchema});
-  const [defaultClass, setDefaultClass] = useState(null);
 
-  useEffect(() => {
-    const classs = classes.filter((el) => el._id===classId && classId);
-    setDefaultClass(classs[0]);
-  },[classId])
 
   const handleChange = (e) => {
     const {name, value} = e.target;
@@ -150,9 +151,17 @@ const FormRow = ({id,handleForm,formData, classes, classId}) => {
     if(name === 'firstName'){
       setError({...error, firstName: {state: false, message: ''}});
     }
+    if((name === 'classId' && formData[id].rollNumber) || (name==='rollNumber' && formData[id].classId)){
+      const rollNumber = name === 'classId' ? formData[id].rollNumber : value;
+      const classId = name === 'classId'? value : formData[id].classId;
+      entityAvailability({route:'/student/check-entity-availablity', payload: {rollNumber, classId}})
+      .catch(()=>{
+        setError({...error, rollNumber: {state: true, message: "A Student with this roll number already exists in this class"}})
+      })
+    }
     handleForm({name, value, id});
   }
-  console.log(defaultClass)
+
   return (
     <React.Fragment>
       <TableRow>
@@ -234,7 +243,7 @@ const FormRow = ({id,handleForm,formData, classes, classId}) => {
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               value={formData[id].classId}
-              defaultValue={defaultClass && defaultClass._id}
+              defaultValue={formData[id].classId}
               label="Class"
               name='classId'
               onChange={handleChange}

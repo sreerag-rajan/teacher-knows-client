@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux"
 import {useNavigate, useParams} from 'react-router-dom'
 import { getClass } from "../../Redux/Classes/classes.action"
 import { AddStudent } from './Components/AddStudent';
-import { CommonTable } from '../../Common/Components/CommonTable/Table';
+import { CommonTable } from '../../Components/Common/Table/Table';
 import { deleteStudent } from '../../Redux/Student/student.action';
 
 export const IndividualClass = () => {

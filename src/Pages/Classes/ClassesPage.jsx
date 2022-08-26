@@ -2,8 +2,8 @@ import React, {useState, useEffect} from 'react';
 import {Button, Grid} from '@mui/material'
 import { Box } from '@mui/system';
 import { useDispatch, useSelector } from 'react-redux';
-import { ClassCard } from '../../Common/Classes/ClassCard';
-import { AddClass } from '../../Common/Classes/AddClass';
+import { ClassCard } from '../../Components/Classes/ClassCard';
+import { AddClass } from '../../Components/Classes/AddClass'
 import { getClasses } from '../../Redux/Classes/classes.action';
 
 export const ClassesPage = () => {

@@ -2,9 +2,9 @@ import { Button, Grid } from "@mui/material"
 import React, { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import {useNavigate} from 'react-router-dom'
-import { AddClass } from "../../../../Common/Classes/AddClass"
+import { AddClass } from "../../../../Components/Classes/AddClass"
 import { getClasses } from "../../../../Redux/Classes/classes.action"
-import { ClassCard } from "../../../../Common/Classes/ClassCard"
+import { ClassCard } from "../../../../Components/Classes/ClassCard"
 
 export const Classes = ({limit}) => {
   const {classes} = useSelector(store => store.classes);

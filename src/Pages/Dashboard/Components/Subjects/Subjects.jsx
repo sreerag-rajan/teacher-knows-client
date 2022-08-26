@@ -2,9 +2,9 @@ import { Button, Grid } from "@mui/material"
 import React, { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import {useNavigate} from 'react-router-dom'
-import { AddSubjects } from "../../../../Common/Subjects/AddSubjects"
+import { AddSubjects } from "../../../../Components/Subjects/AddSubjects"
 import { getSubjects } from "../../../../Redux/Subject/subject.action"
-import { SubjectCard } from "../../../../Common/Subjects/SubjectCard"
+import { SubjectCard } from "../../../../Components/Subjects/SubjectCard"
 
 export const Subjects = () => {
 
