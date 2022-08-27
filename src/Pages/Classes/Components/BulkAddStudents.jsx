@@ -2,12 +2,14 @@ import { TextField, Table, TableBody, TableRow, TableCell, TableHead, TableConta
 import {
   get as _get,
   isEmpty as _isEmpty,
+  filter as _filter,
 } from 'lodash';
 import { Box } from "@mui/system"
 import React, {useState, useEffect} from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { useParams } from "react-router-dom";
 import { getClasses } from "../../../Redux/Classes/classes.action";
+import {bulkAddStudents} from '../../../Redux/Student/student.action';
 import { entityAvailability } from "../../../Utility/utlity";
 
 const upperLimit = 15;
@@ -19,6 +21,7 @@ const formSchema = {
   studentEmail: '',
   parentEmail : '',
   classId: '',
+  error: false,
 }
 const errorSchema = {state: false, message : ''}
 
@@ -66,10 +69,10 @@ export const BulkAddStudents = () => {
 
   }
 
-  const handleFormChange = ({name, value, id}) => {
+  const handleFormChange = ({name, value, id, error}) => {
     let x = formData.map((el,i) => {
       if(i==id){
-        let y = {...el, [name]: value}
+        let y = {...el, [name]: value, error: error}
         return y
       }
       else{
@@ -80,9 +83,39 @@ export const BulkAddStudents = () => {
     setFormData(x);
   }
 
-  const checkFunction = () => {
+  const handleSubmit = () => {
+    let errorFound = false;
+    const errorCheck = formData.map((el,i) => {
+      if(!_get(el, 'rollnumber', null) || !_get(el, 'firstName', null) || _get(el, 'error', false)){
+        el.error = true;
+        errorFound = true;
+      }
+      else if(!el.gender){
+        el.gender = 'NOT DISCLOSED';
+      }
+      return el;
+    });
+    let payload;
+    if(errorFound === true){
+      setFormData(errorCheck);
+      return;
+    }
+    else{
+      payload = errorCheck.map((el, i) => {
+        return {
+          rollNumber: el.rollNumber,
+          firstName: el.firstName,
+          lastName: el.lastName,
+          gender: el.gender,
+          studentEmail: el.studentEmail,
+          parentEmail: el.parentEmail,
+          classId: el.classId
+        }
+      })
+    }
 
-    // check for missing values
+    //dispatch to action
+    dispatch(bulkAddStudents({payload, classId}));
   }
   return (
     <React.Fragment>
@@ -113,7 +146,6 @@ export const BulkAddStudents = () => {
                   <TableCell>Student Email</TableCell>
                   <TableCell>Parent Email</TableCell>
                   <TableCell>Class</TableCell>
-                  <TableCell>Action</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -125,7 +157,7 @@ export const BulkAddStudents = () => {
           </TableContainer>}
 
           <Box>
-            <Button variant={'contained'}>Add Students</Button>
+            <Button onClick={handleSubmit} variant={'contained'}>Add Students</Button>
           </Box>
         
       </Box>
@@ -142,9 +174,21 @@ const FormRow = ({id,handleForm,formData, classes, classId}) => {
   }
   const [error, setError] = useState({...errorSchema});
 
+  useEffect(() => {
+    if(_get(formData[id], 'error', false) === true){
+      if(!_get(formData[id], 'rollNumber', null)){
+        setError((prevError)=>({...prevError, rollNumber:{state: true, message: 'This field Cannot be blank'}}))
+      }
+      if(!_get(formData[id], 'firstName', null)){
+        setError((prevError) =>({...prevError, firstName:{state: true, message: 'This field Cannot be blank'}}))        
+      }
+    }
+  }, [formData])
+
 
   const handleChange = (e) => {
     const {name, value} = e.target;
+    let er = false;
     if(name === 'rollNumber'){
       setError({...error, rollNumber: {state: false, message: ''}})
     }
@@ -155,11 +199,25 @@ const FormRow = ({id,handleForm,formData, classes, classId}) => {
       const rollNumber = name === 'classId' ? formData[id].rollNumber : value;
       const classId = name === 'classId'? value : formData[id].classId;
       entityAvailability({route:'/student/check-entity-availablity', payload: {rollNumber, classId}})
+      .then(res => {
+        if(res.status == 200){
+          const check = formData.filter((el, i) => {
+            if(el.rollNumber === rollNumber && el.classId === classId && i!==id)
+              return el;
+          })
+    
+          if(!_isEmpty(check)) {
+            setError({...error, rollNumber: {state: true, message: "A Student with this roll number and class is present within this form"}});
+            er = true
+          }
+        }
+      })
       .catch(()=>{
         setError({...error, rollNumber: {state: true, message: "A Student with this roll number already exists in this class"}})
+        er= true;
       })
     }
-    handleForm({name, value, id});
+    handleForm({name, value, id, error : er});
   }
 
   return (
@@ -170,7 +228,7 @@ const FormRow = ({id,handleForm,formData, classes, classId}) => {
         </TableCell>
         <TableCell>
           <TextField
-            value={formData[id].rollNumber}
+            value={_get(formData[id], 'rollNumber', '')}
             onChange={handleChange}
             helperText={error.rollNumber.state && error.rollNumber.message}
             error={error.rollNumber.state}
@@ -181,7 +239,7 @@ const FormRow = ({id,handleForm,formData, classes, classId}) => {
         </TableCell>
         <TableCell>
           <TextField
-            value={formData[id].firstName}
+            value={_get(formData[id], 'firstName', '')}
             onChange={handleChange}
             helperText={error.firstName.state && error.firstName.message}
             error={error.firstName.state}
@@ -192,7 +250,7 @@ const FormRow = ({id,handleForm,formData, classes, classId}) => {
         </TableCell>
         <TableCell>
           <TextField
-            value={formData[id].lastName}
+            value={_get(formData[id], 'lastName', '')}
             onChange={handleChange}
             name='lastName'
             label="Last Name"
@@ -205,7 +263,7 @@ const FormRow = ({id,handleForm,formData, classes, classId}) => {
             <NativeSelect
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              value={formData[id].gender}
+              value={_get(formData[id], 'gender', '')}
               label="Gender"
               name='gender'
               onChange={handleChange}
@@ -220,7 +278,7 @@ const FormRow = ({id,handleForm,formData, classes, classId}) => {
         </TableCell>
         <TableCell>
           <TextField
-            value={formData[id].studentEmail}
+            value={_get(formData[id], 'studentEmail', '')}
             onChange={handleChange}
             name='studentEmail'
             label="Student Email"
@@ -229,7 +287,7 @@ const FormRow = ({id,handleForm,formData, classes, classId}) => {
         </TableCell>
         <TableCell>
           <TextField
-            value={formData[id].parentEmail}
+            value={_get(formData[id], 'parentEmail', '')}
             onChange={handleChange}
             name='parentEmail'
             label="Parent Email"
@@ -242,8 +300,8 @@ const FormRow = ({id,handleForm,formData, classes, classId}) => {
             <NativeSelect
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              value={formData[id].classId}
-              defaultValue={formData[id].classId}
+              value={_get(formData[id], 'classId', '')}
+              defaultValue={_get(formData[id], 'classId', '')}
               label="Class"
               name='classId'
               onChange={handleChange}
@@ -255,9 +313,9 @@ const FormRow = ({id,handleForm,formData, classes, classId}) => {
             </NativeSelect>
           </FormControl>
         </TableCell>
-        <TableCell>
+        {/* <TableCell>
           <Button variant="contained">Check</Button>
-        </TableCell>
+        </TableCell> */}
       </TableRow>
 
     </React.Fragment>

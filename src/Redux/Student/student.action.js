@@ -60,3 +60,14 @@ export const deleteStudent = (id) => dispatch => {
     })
     .finally(()=> dispatch({type: SET_STUDENTS_LOADING, payload:false}))
 }
+
+export const bulkAddStudents = ({payload, classId}) => dispatch => {
+  dispatch({type: SET_STUDENTS_LOADING, payload: true});
+  axios.post('/student/bulk-create', {students: payload, classId})
+    .then(({data}) => {
+      dispatch({type: SET_STUDENTS, payload: data.students});
+      toast.success('Students Added Successfully');
+    })
+    .catch((er) => console.log('ERROR ::: bulkAddStudents :::', er))
+    .finally(() => dispatch({type: SET_STUDENTS_LOADING, payload:false}));
+}
