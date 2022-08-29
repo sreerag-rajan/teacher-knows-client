@@ -20,7 +20,7 @@ export const ForgotPassword = () => {
     if(email===""){
       return setError(true)
     }
-    dispatch(createVerificationToken(email))
+    dispatch(createVerificationToken({user: email, type:'FORGOT_PASSWORD'}))
   }
   return(
     <div>

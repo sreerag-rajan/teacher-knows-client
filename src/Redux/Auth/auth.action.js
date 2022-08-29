@@ -17,15 +17,13 @@ export const registerUser = (payload) => dispatch => {
 			sessionStorage.setItem('__tk_userToken', JSON.stringify(data.token));
 			sessionStorage.setItem('__tk_user' , JSON.stringify(data.user));
 			sessionStorage.setItem('__tk_verify_token_type', JSON.stringify('REGISTER'));
-			dispatch(createVerificationToken(data.user.email));
+			dispatch(createVerificationToken({user:data.user.email, type: "REGISTER"}));
 
 		})
 		.catch((er)=>{
-			console.error('ERROR ::: registerUser:::', er.message, "; ", er.response.data.error)
-		})
-		.finally(()=>{
+			console.error('ERROR ::: registerUser:::', er.message, "; ", er.response.data.error);
 			dispatch(setLoadingState(false))
-		})
+		});
 }
 
 export const loginUser = payload => dispatch => {
@@ -63,7 +61,7 @@ export const resetPassword = payload => dispatch => {
 
 export const createVerificationToken = payload => dispatch => {
 	dispatch(setLoadingState(true))
-	axios.post(`${serverapi}/token/create-token`,{user:payload})
+	axios.post(`${serverapi}/token/create-token`,payload)
 		.then((res)=>{
 			sessionStorage.setItem('__tk_user' , JSON.stringify(res.data));
 
