@@ -1,4 +1,4 @@
-import { TextField, Table, TableBody, TableRow, TableCell, TableHead, TableContainer, Button, FormControl, InputLabel, NativeSelect } from "@mui/material"
+import { TextField, Table, TableBody, TableRow, TableCell, TableHead, TableContainer, Button, FormControl, InputLabel, NativeSelect, InputAdornment } from "@mui/material"
 import {
   get as _get,
   isEmpty as _isEmpty,
@@ -8,9 +8,9 @@ import { Box } from "@mui/system"
 import React, {useState, useEffect} from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { useParams } from "react-router-dom";
-import { getClasses } from "../../../Redux/Classes/classes.action";
-import {bulkAddStudents} from '../../../Redux/Student/student.action';
-import { entityAvailability } from "../../../Utility/utlity";
+import { getClasses } from "../../../../Redux/Classes/classes.action";
+import {bulkAddStudents} from '../../../../Redux/Student/student.action';
+import { entityAvailability } from "../../../../Utility/utlity";
 
 const upperLimit = 15;
 const formSchema = {
@@ -25,7 +25,7 @@ const formSchema = {
 }
 const errorSchema = {state: false, message : ''}
 
-export const BulkAddStudents = () => {
+export const Manual = () => {
   const [numberOfStudents, setNumberOfStudents] = useState(0);
   const [formData, setFormData] = useState([]);
   const [error, setError] = useState({...errorSchema});
@@ -130,35 +130,43 @@ export const BulkAddStudents = () => {
             label="Number of Students"
             variant='outlined'
             type='number' 
-            InputProps={{ inputProps : {max: 10}}}      
+            InputProps={{ 
+              inputProps : {max: upperLimit},
+              endAdornment : <InputAdornment position="end">Max {upperLimit}</InputAdornment>
+            }}      
           />
 
-          <hr />
-         {numberOfStudents> 0 && <TableContainer>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>#</TableCell>
-                  <TableCell>Roll Number</TableCell>
-                  <TableCell>First Name</TableCell>
-                  <TableCell>Last Name</TableCell>
-                  <TableCell>Gender</TableCell>
-                  <TableCell>Student Email</TableCell>
-                  <TableCell>Parent Email</TableCell>
-                  <TableCell>Class</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {formData.length>0 && formData.map((el, i) => {
-                return <FormRow key={i} id={i} handleForm={handleFormChange} formData={formData} classes ={classes} classId={classId}/>})
-                }
-              </TableBody>
-            </Table>
-          </TableContainer>}
+         {numberOfStudents> 0 && <hr />}
+         {numberOfStudents> 0 && 
+         <React.Fragment>
+          <TableContainer>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>#</TableCell>
+                    <TableCell>Roll Number</TableCell>
+                    <TableCell>First Name</TableCell>
+                    <TableCell>Last Name</TableCell>
+                    <TableCell>Gender</TableCell>
+                    <TableCell>Student Email</TableCell>
+                    <TableCell>Parent Email</TableCell>
+                    <TableCell>Class</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {formData.length>0 && formData.map((el, i) => {
+                  return <FormRow key={i} id={i} handleForm={handleFormChange} formData={formData} classes ={classes} classId={classId}/>})
+                  }
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <Box>
+              <Button onClick={handleSubmit} variant={'contained'}>Add Students</Button>
+            </Box>
+          </React.Fragment>
+          }
 
-          <Box>
-            <Button onClick={handleSubmit} variant={'contained'}>Add Students</Button>
-          </Box>
+         
         
       </Box>
     </React.Fragment>

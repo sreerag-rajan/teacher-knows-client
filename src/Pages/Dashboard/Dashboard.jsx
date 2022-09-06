@@ -1,14 +1,15 @@
 import { useSelector } from "react-redux"
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Classes } from "./Components/Classes/Classes";
 import { Subjects } from "./Components/Subjects/Subjects";
 
 
 export const Dashboard = ()=>{
     const user = useSelector((store)=>store.auth.user) || JSON.parse(localStorage.getItem('__tk_user'));
+    const navigate = useNavigate()
 
     if(!user){
-        Navigate({to:"/home"})
+        navigate("/home");
     }
     return(
         <div>

@@ -1,4 +1,5 @@
-import { Button, Grid } from "@mui/material"
+import { Button, Grid, Box } from "@mui/material"
+import {isEmpty as _isEmpty} from 'lodash';
 import React, { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import {useNavigate} from 'react-router-dom'
@@ -54,11 +55,11 @@ export const Classes = ({limit}) => {
             display: 'grid', 
             // flexWrap:'wrap',
             gridTemplateColumns: '50% 50%',
-            gridTemplateRows: '13rem 13rem', 
+            gridTemplateRows: !_isEmpty(classes) && '13rem 13rem', 
             gap: '1.5rem', 
             justifyContent: 'space-around'
           }} item xs={8}>
-          {classes && classes.map((el, i)=>{
+          {_isEmpty(classes) ? <Box>No Classes Added</Box> : classes.map((el, i)=>{
             if(i<limit) return <ClassCard key={el._id} item={el} handleMode={handleMode}/>
           })}
         </Grid>

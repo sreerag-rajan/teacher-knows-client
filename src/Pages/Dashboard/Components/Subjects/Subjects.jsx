@@ -1,5 +1,8 @@
-import { Button, Grid } from "@mui/material"
+import { Button, Grid, Box } from "@mui/material"
 import React, { useEffect, useState } from "react"
+import {
+  isEmpty as _isEmpty,
+} from 'lodash'
 import { useDispatch, useSelector } from "react-redux"
 import {useNavigate} from 'react-router-dom'
 import { AddSubjects } from "../../../../Components/Subjects/AddSubjects"
@@ -47,7 +50,7 @@ export const Subjects = () => {
         <h2>Subjects</h2>
       </Grid>
       <Grid sx={{display: 'flex', flexWrap:'wrap', gap: '1.5rem', justifyContent: 'space-around'}} item xs={8}>
-        {subjects && subjects.map((el, i)=>{
+        {_isEmpty(subjects)? <Box>No Subjects Added</Box> :subjects.map((el, i)=>{
           if(i<3) return <SubjectCard key={el._id} subject = {el} handleMode={handleMode}/>
         })}
       </Grid>
